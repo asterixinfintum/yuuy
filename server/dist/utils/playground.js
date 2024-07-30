@@ -1,0 +1,5 @@
+"use strict";
+
+var verifyContract = require("./verifyContract");
+
+//verifyContract('0xe50718Ec2afF0808874e2426b9156fAA07E765aa', ['name', 'symbol', '0x0C0eA0D6d0E329873F58810e92F98C9C0938D227', '0x77644f746f4e3455573800000000000000000000000000000000000000000000']);
