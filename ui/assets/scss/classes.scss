@@ -1,0 +1,87 @@
+.control-button {
+    background: transparent;
+    border: 1px solid $neon-green;
+    outline: none;
+    color: $neon-green;
+    padding: #{scaleValue(10)} 0;
+    font-size: #{scaleValue(12)};
+
+    cursor: pointer;
+    width: #{scaleValue(100)};
+    transition: all .5s ease;
+
+    &:hover {
+        color: rgba($neon-green, .5);
+    }
+}
+
+.margin-bottom-20 {}
+
+.opacity-2 {
+    opacity: .2;
+}
+
+.visible {
+    display: block;
+}
+
+.invisible {
+    display: none;
+}
+
+.popup {
+    position: fixed;
+    top: 0;
+    background: rgba($purple, .5);
+
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all .5s ease;
+    opacity: 0;
+    z-index: -1;
+
+    &.visible {
+        opacity: 1;
+        z-index: 2;
+    }
+
+    &__body {
+        background: $grey-black;
+        min-height: #{scaleValue(100)};
+        min-width: #{scaleValue(500)};
+        transition: all .5s ease;
+        transform: translateY(#{scaleValue(-200)});
+
+        color: $white;
+        display: flex;
+        flex-direction: column;
+        line-height: #{scaleValue(55)};
+        padding: 1.5rem;
+        border-radius: 1rem;
+    }
+}
+
+.loading {
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+
+    &::after {
+        content: '';
+        position: relative;
+        height: #{scaleValue(20)};
+        width: #{scaleValue(20)};
+        transition: all .5s ease;
+        background: transparent;
+        border-left: 3px solid $neon-green;
+        animation: spin .5s linear infinite;
+
+        border-radius: 100%;
+        margin-left: #{scaleValue(10)};
+    }
+}

@@ -1,0 +1,12 @@
+@function scaleValue($value) {
+    @return calc(
+      #{$value} * (clamp(350px, 100vw, 3840px) / var(--ideal-viewport-width))
+    );
+}
+
+$white: #fff;
+$black: #07141C;
+$grey-black: rgb(27, 27, 27);
+$white-smoke: #F5F5F5;
+$purple: #561455;
+$neon-green: #39FF14;
