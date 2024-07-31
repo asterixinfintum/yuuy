@@ -16,16 +16,6 @@ import routes from './routes';
 const app = express();
 const server = http.createServer(app);
 
-// CORS Configuration
-const corsOptions = {
-    origin: 'http://localhost:3000', // Replace with your frontend URL
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-    allowedHeaders: ['Authorization', 'Content-Type']
-};
-
-app.use(cors(corsOptions));
-
 app.use(session({
     secret: process.env.SECRET_KEY,
     resave: false,
@@ -37,6 +27,24 @@ app.use(session({
         maxAge: 1000 * 60 * 60 * 24 // 1 day
     }
 }));
+
+const allowedOrigins = [`${process.env.baseurl}`, `${process.env.wwwbaseurl}`]; // Add your domains here
+
+const corsOptions = {
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    allowedHeaders: 'Content-Type, Authorization',
+    credentials: true,
+    optionsSuccessStatus: 200 // For legacy browser support
+};
+
+app.use(cors(corsOptions));
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());

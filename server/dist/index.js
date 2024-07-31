@@ -20,16 +20,6 @@ if (process.env.NODE_ENV !== 'production') {
 }
 var app = (0, _express["default"])();
 var server = _http["default"].createServer(app);
-
-// CORS Configuration
-var corsOptions = {
-  origin: 'http://localhost:3000',
-  // Replace with your frontend URL
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-  allowedHeaders: ['Authorization', 'Content-Type']
-};
-app.use((0, _cors["default"])(corsOptions));
 app.use((0, _expressSession["default"])({
   secret: process.env.SECRET_KEY,
   resave: false,
@@ -45,6 +35,22 @@ app.use((0, _expressSession["default"])({
     maxAge: 1000 * 60 * 60 * 24 // 1 day
   }
 }));
+var allowedOrigins = ["".concat(process.env.baseurl), "".concat(process.env.wwwbaseurl)]; // Add your domains here
+
+var corsOptions = {
+  origin: function origin(_origin, callback) {
+    if (!_origin || allowedOrigins.includes(_origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+  allowedHeaders: 'Content-Type, Authorization',
+  credentials: true,
+  optionsSuccessStatus: 200 // For legacy browser support
+};
+app.use((0, _cors["default"])(corsOptions));
 app.use(_express["default"].urlencoded({
   extended: false
 }));
