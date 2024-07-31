@@ -80,10 +80,10 @@ export default {
   },
   computed: {
     currentDomain() {
-      if (window.location.href.contains('localhost')) {
+      if (`${window.location.href}`.contains('localhost')) {
         return `http://localhost:8085`;
       } else {
-        return `https://api.${this.getBaseFromUrl(window.location.href)}.com`;
+        return `https://api.${this.getBaseFromUrl(`${window.location.href}`)}.com`;
       }
     },
     currentContent() {
