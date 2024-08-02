@@ -21,6 +21,10 @@ var contractItmSchema = new mongoose.Schema({
     type: String,
     required: true,
     trim: true
+  },
+  isVerified: {
+    type: Boolean,
+    "default": false
   }
 });
 var ContractItem = mongoose.model('Contact', contractItmSchema);

@@ -20,6 +20,10 @@ const contractItmSchema = new mongoose.Schema({
         type: String,
         required: true,
         trim: true
+    },
+    isVerified: {
+        type: Boolean,
+        default: false
     }
 });
 
