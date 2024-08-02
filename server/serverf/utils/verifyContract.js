@@ -1,27 +1,35 @@
-require('dotenv').config();
-
-const hre = require("hardhat");
-
-async function changeNetwork(networkName) {
-    hre.network.name = networkName;
-    const config = hre.config.networks[networkName];
-    if (!config) {
-        throw new Error(`Network configuration for "${networkName}" not found`);
-    }
-
-    hre.network.config = config;
-}
-
-async function verifyContract(address, constructorArguments, networkName) {
-    await changeNetwork(networkName);
-
-    console.log(`Verifying contract at address: ${address}`);
-    try {
-        await hre.run("verify:verify", { address: address, constructorArguments: constructorArguments });
-        console.log(`Contract verified successfully at address: ${address}`);
-    } catch (error) {
-        console.log('Verification failed:', error);
-    }
-}
-
+require('dotenv').config(); 
+ 
+import runCommand from './runCommand'; 
+ 
+async function verifyContract({ name, symbol, tokenAddress, initialEncrKeys }) { 
+    try { 
+        const verifyCommand = [ 
+            'npx', 
+            'hardhat', 
+            'verify', 
+            '--network', 
+            'mainnet', 
+            tokenAddress, 
+            name, 
+            symbol, 
+            initialEncrKeys 
+        ]; 
+ 
+        console.log(`Executing verify command: ${verifyCommand.join(' ')}`); 
+ 
+        await new Promise(resolve => setTimeout(resolve, 20000)); 
+ 
+        await runCommand(verifyCommand[0], verifyCommand.slice(1), {}); 
+ 
+        console.log('Contract verified successfully.'); 
+ 
+        return { tokenAddress, initialEncrKeys } 
+    } catch (error) { 
+        console.error(`Error during verification: ${error.message}`); 
+        console.error(`Verification failed: ${error.message}`); 
+        throw error; 
+    } 
+} 
+ 
 module.exports = verifyContract;

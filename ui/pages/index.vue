@@ -222,8 +222,8 @@ export default {
         <span>Your Token is deployed at</span>
 
         <span>
-            <a href="https://sepolia.etherscan.io/address/${tokenAddress}#code" target="_blank" >
-              https://sepolia.etherscan.io/address/${tokenAddress}#code
+            <a href="https://etherscan.io/address/${tokenAddress}#code" target="_blank" >
+              https://etherscan.io/address/${tokenAddress}#code
             </a>
         </span>
 
