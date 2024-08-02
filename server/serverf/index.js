@@ -14,7 +14,7 @@ import MongoStore from 'connect-mongo';
 import routes from './routes';
 import cron from 'node-cron';
 
-import verifyContract from './utils/verifyContract;'
+import verifyContract from './utils/verifyContract';
 
 const app = express();
 const server = http.createServer(app);
