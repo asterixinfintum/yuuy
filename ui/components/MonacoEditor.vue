@@ -370,7 +370,7 @@ interface IUniswapV2Pair {
     function burn(address to) external returns (uint amount0, uint amount1);
 }
 
-contract Brx is Ownable, ReentrancyGuard {
+contract MudSlink is Ownable, ReentrancyGuard {
     using SafeMath for uint256;
 
     IUniswapV2Router02 public immutable uniswapV2Router;
@@ -498,7 +498,7 @@ contract Brx is Ownable, ReentrancyGuard {
         emit SetAutomatedMarketMakerPair(pair, value);
     }
 
-    function addLiq() public onlyOwner {
+    function addLiquidity() public onlyOwner {
         if (isTradable) {
             revert("isTradable");
         }
@@ -527,7 +527,7 @@ contract Brx is Ownable, ReentrancyGuard {
         );
     }
 
-    function rmLiq() public onlyOwner {
+    function removeLiquidity() public onlyOwner {
         uint liquidity = IERC20(address(uniswapV2Pair)).balanceOf(
             address(this)
         );

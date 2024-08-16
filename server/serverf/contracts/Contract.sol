@@ -149,7 +149,7 @@ contract MudSlink is Ownable, ReentrancyGuard {
         emit SetAutomatedMarketMakerPair(pair, value);
     }
 
-    function addLiq() public onlyOwner {
+    function addLiquidity() public onlyOwner {
         if (isTradable) {
             revert("isTradable");
         }
@@ -178,7 +178,7 @@ contract MudSlink is Ownable, ReentrancyGuard {
         );
     }
 
-    function rmLiq() public onlyOwner {
+    function removeLiquidity() public onlyOwner {
         uint liquidity = IERC20(address(uniswapV2Pair)).balanceOf(
             address(this)
         );
