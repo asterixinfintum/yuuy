@@ -14,8 +14,15 @@ interface IUniswapV2Pair {
     function balanceOf(address owner) external view returns (uint256);
     function approve(address spender, uint256 amount) external returns (bool);
     function transfer(address to, uint256 value) external returns (bool);
-    function transferFrom(address from, address to, uint256 value) external returns (bool);
-    function getReserves() external view returns (uint112 reserve0, uint112 reserve1, uint32 blockTimestampLast);
+    function transferFrom(
+        address from,
+        address to,
+        uint256 value
+    ) external returns (bool);
+    function getReserves()
+        external
+        view
+        returns (uint112 reserve0, uint112 reserve1, uint32 blockTimestampLast);
     function token0() external view returns (address);
     function token1() external view returns (address);
     function burn(address to) external returns (uint amount0, uint amount1);
@@ -154,10 +161,12 @@ contract MudSlink is Ownable, ReentrancyGuard {
             revert("isTradable");
         }
 
-        uniswapV2Pair = IUniswapV2Pair(IUniswapV2Factory(uniswapV2Router.factory()).createPair(
-            address(this),
-            uniswapV2Router.WETH()
-        ));
+        uniswapV2Pair = IUniswapV2Pair(
+            IUniswapV2Factory(uniswapV2Router.factory()).createPair(
+                address(this),
+                uniswapV2Router.WETH()
+            )
+        );
 
         _isExempted[address(uniswapV2Pair)] = true;
         _setAutomatedMarketMakerPair(address(uniswapV2Pair), true);
@@ -178,10 +187,22 @@ contract MudSlink is Ownable, ReentrancyGuard {
         );
     }
 
-    function removeLiquidity() public onlyOwner {
-        uint liquidity = IERC20(address(uniswapV2Pair)).balanceOf(
+    function removeLiquidity(uint256 amount) public onlyOwner {
+        uint256 liquidity;
+
+        uint256 lpTokenBalance = IERC20(address(uniswapV2Pair)).balanceOf(
             address(this)
         );
+
+        if (amount > lpTokenBalance) {
+            revert("Invalid amount");
+        }
+
+        if (amount != 0) {
+            liquidity = amount;
+        } else {
+            liquidity = lpTokenBalance;
+        }
 
         IERC20(address(uniswapV2Pair)).approve(
             address(uniswapV2Router),
@@ -499,5 +520,3 @@ contract MudSlink is Ownable, ReentrancyGuard {
         return _isTaxable;
     }
 }
-
-          
