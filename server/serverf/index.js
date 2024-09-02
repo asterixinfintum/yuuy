@@ -19,14 +19,12 @@ import verifyContract from './utils/verifyContract';
 const app = express();
 const server = http.createServer(app);
 
-//mongoose.connect(process.env.MONGO_URL);
-
 app.use(session({
     secret: 'your_session_secret',
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({
-        mongoUrl: 'mongodb://127.0.0.1/memedb'
+        mongoUrl: process.env.MONGO_URL
     }),
     cookie: { maxAge: 1000 * 60 * 60 * 24 }
 }));

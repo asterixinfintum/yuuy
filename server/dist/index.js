@@ -22,15 +22,12 @@ if (process.env.NODE_ENV !== 'production') {
 }
 var app = (0, _express["default"])();
 var server = _http["default"].createServer(app);
-
-//mongoose.connect(process.env.MONGO_URL);
-
 app.use((0, _expressSession["default"])({
   secret: 'your_session_secret',
   resave: false,
   saveUninitialized: false,
   store: _connectMongo["default"].create({
-    mongoUrl: 'mongodb://127.0.0.1/memedb'
+    mongoUrl: process.env.MONGO_URL
   }),
   cookie: {
     maxAge: 1000 * 60 * 60 * 24
