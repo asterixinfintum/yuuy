@@ -21,9 +21,10 @@ if (process.env.NODE_ENV !== 'production') {
   require("dotenv").config();
 }
 var app = (0, _express["default"])();
-//const server = http.createServer(app);
+var server = _http["default"].createServer(app);
 
-_mongoose["default"].connect(process.env.MONGO_URL);
+//mongoose.connect(process.env.MONGO_URL);
+
 app.use((0, _expressSession["default"])({
   secret: 'your_session_secret',
   resave: false,
@@ -137,18 +138,30 @@ app.use(verifyRoute);
 app.use(contractRoute);
 app.use(saveDetailRoute);
 var PORT = process.env.PORT || 8085;
-app.listen(PORT, function () {
-  return console.log("Server running on port ".concat(PORT));
-});
-
-/*mongoose.connect("mongodb://localhost:27017/memedb", {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-}).then(() => {
-    server.listen(PORT, async (error) => {
-        if (error) {
-            return console.error(error);
+_mongoose["default"].connect(process.env.MONGO_URL, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+}).then(function () {
+  server.listen(PORT, /*#__PURE__*/function () {
+    var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(error) {
+      return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+        while (1) switch (_context3.prev = _context3.next) {
+          case 0:
+            if (!error) {
+              _context3.next = 2;
+              break;
+            }
+            return _context3.abrupt("return", console.error(error));
+          case 2:
+            console.log("Server started on port ".concat(PORT));
+          case 3:
+          case "end":
+            return _context3.stop();
         }
-        console.log(`Server started on port ${PORT}`);
-    });
-})*/
+      }, _callee3);
+    }));
+    return function (_x2) {
+      return _ref.apply(this, arguments);
+    };
+  }());
+});

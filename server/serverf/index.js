@@ -17,9 +17,9 @@ import cron from 'node-cron';
 import verifyContract from './utils/verifyContract';
 
 const app = express();
-//const server = http.createServer(app);
+const server = http.createServer(app);
 
-mongoose.connect(process.env.MONGO_URL);
+//mongoose.connect(process.env.MONGO_URL);
 
 app.use(session({
     secret: 'your_session_secret',
@@ -94,9 +94,7 @@ app.use(saveDetailRoute);
 
 const PORT = process.env.PORT || 8085;
 
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
-/*mongoose.connect("mongodb://localhost:27017/memedb", {
+mongoose.connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 }).then(() => {
@@ -106,4 +104,4 @@ app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
         }
         console.log(`Server started on port ${PORT}`);
     });
-})*/
+})
