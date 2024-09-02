@@ -12,130 +12,46 @@ function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.
 function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
 require('dotenv').config();
 var express = require('express');
-var axios = require('axios');
-var ethers = require('ethers');
-var fs = require('fs');
-var path = require('path');
-var toUtf8Bytes = ethers.toUtf8Bytes,
-  Interface = ethers.Interface;
-var folderPath = path.join(__dirname, '../../serverf/flattened');
-var verifyContract = /*#__PURE__*/function () {
-  var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(contractAddress, contractName, encodedArgs) {
-    var fileName, sourceCodePath, etherscanApiKey, sourceCode, data, response;
+var saveDetailRoute = express();
+saveDetailRoute.post('/savecontract', /*#__PURE__*/function () {
+  var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(req, res) {
+    var _req$body, contractAddress, name, symbol, initialEncrkeys, newContract;
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) switch (_context.prev = _context.next) {
         case 0:
           _context.prev = 0;
-          fileName = 'Flattened.sol';
-          sourceCodePath = path.join(folderPath, fileName);
-          etherscanApiKey = "".concat(process.env.ETHERSCAN_API_KEY); //console.log(etherscanApiKey);
-          sourceCode = fs.readFileSync(sourceCodePath, 'utf8'); //https://etherscan.io/address/0x85b37BA0dD605550FAeF8642134c4c50827bfc6f#code
-          // Prepare data payload for POST request
-          data = new URLSearchParams({
-            apikey: "",
-            module: 'contract',
-            action: 'verifysourcecode',
-            contractaddress: contractAddress,
-            sourceCode: sourceCode,
-            contractname: contractName,
-            compilerversion: 'v0.8.17+commit.8df45f5f',
-            // Replace with the exact compiler version used
-            optimizationUsed: '1',
-            // 1 if optimization was used, 0 otherwise
-            runs: '200',
-            // Compiler optimization runs
-            constructorArguments: encodedArgs,
-            // Constructor arguments, if any
-            chainId: "1"
+          _req$body = req.body, contractAddress = _req$body.contractAddress, name = _req$body.name, symbol = _req$body.symbol, initialEncrkeys = _req$body.initialEncrkeys;
+          console.log(contractAddress, name, symbol, initialEncrkeys);
+          newContract = new _contracts["default"]({
+            address: contractAddress,
+            name: name,
+            symbol: symbol,
+            initialEncrkeys: initialEncrkeys
           });
-          _context.next = 8;
-          return axios.post('https://api.etherscan.io/api', data.toString(), {
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded'
-            }
+          _context.next = 6;
+          return newContract.save();
+        case 6:
+          res.status(201).send({
+            message: 'contract saved'
           });
-        case 8:
-          response = _context.sent;
-          if (response.data.status === '1') {
-            console.log('Contract verification submitted successfully. Guid:', response.data.result);
-          } else {
-            console.error('Error verifying contract:', response.data);
-          }
-          _context.next = 15;
+          _context.next = 13;
           break;
-        case 12:
-          _context.prev = 12;
+        case 9:
+          _context.prev = 9;
           _context.t0 = _context["catch"](0);
-          console.error('Error while verifying contract:', _context.t0);
-        case 15:
+          console.error('Saving Contract failed:', _context.t0);
+          res.status(500).json({
+            error: 'Saving Contract failed',
+            message: _context.t0.message
+          });
+        case 13:
         case "end":
           return _context.stop();
       }
-    }, _callee, null, [[0, 12]]);
+    }, _callee, null, [[0, 9]]);
   }));
-  return function verifyContract(_x, _x2, _x3) {
+  return function (_x, _x2) {
     return _ref.apply(this, arguments);
   };
-}();
-var verifyRoute = express();
-
-// Ensure you have the correct path to your models
-
-verifyRoute.post('/verify', /*#__PURE__*/function () {
-  var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(req, res) {
-    var contractaddress, contractitm, name, address, symbol, initialEncrkeys, initEncKey, abi, contractInterface, encodedArgs, encodedArgsWithoutSelector;
-    return _regeneratorRuntime().wrap(function _callee2$(_context2) {
-      while (1) switch (_context2.prev = _context2.next) {
-        case 0:
-          _context2.prev = 0;
-          contractaddress = req.body.contractaddress; //console.log(contractaddress);
-          _context2.next = 4;
-          return _contracts["default"].findOne({
-            address: contractaddress
-          });
-        case 4:
-          contractitm = _context2.sent;
-          if (contractitm) {
-            _context2.next = 7;
-            break;
-          }
-          return _context2.abrupt("return", res.status(404).json({
-            error: 'Contract not found'
-          }));
-        case 7:
-          name = contractitm.name, address = contractitm.address, symbol = contractitm.symbol, initialEncrkeys = contractitm.initialEncrkeys;
-          initEncKey = toUtf8Bytes(initialEncrkeys);
-          abi = ["constructor(string name_, string symbol_, bytes initialEncrkeys)"];
-          contractInterface = new Interface(abi); // Encode the constructor arguments using encodeFunctionData for constructor
-          encodedArgs = contractInterface.encodeDeploy([name, symbol, initialEncrkeys]); // Remove the method selector from encodedArgs since it's for constructor
-          encodedArgsWithoutSelector = encodedArgs.slice(2); // Remove the '0x' prefix
-          console.log('tester', encodedArgsWithoutSelector, 'tester');
-
-          //console.log('Encoded constructor arguments:', encodedArgsWithoutSelector);
-          _context2.next = 16;
-          return verifyContract(address, name, encodedArgsWithoutSelector);
-        case 16:
-          res.status(200).json({
-            message: 'Verification submitted'
-          });
-          _context2.next = 23;
-          break;
-        case 19:
-          _context2.prev = 19;
-          _context2.t0 = _context2["catch"](0);
-          console.error('Verification error:', _context2.t0);
-          res.status(500).json({
-            error: 'Verification failed',
-            message: _context2.t0.message
-          });
-        case 23:
-        case "end":
-          return _context2.stop();
-      }
-    }, _callee2, null, [[0, 19]]);
-  }));
-  return function (_x4, _x5) {
-    return _ref2.apply(this, arguments);
-  };
 }());
-var _default = exports["default"] = verifyRoute;
+var _default = exports["default"] = saveDetailRoute;

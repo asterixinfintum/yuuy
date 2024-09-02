@@ -3,7 +3,8 @@ require('dotenv').config();
 const fs = require('fs').promises;
 const path = require('path');
 
-const { types, task } = require("hardhat/config")
+const { types, task } = require("hardhat/config");
+//const hre = require('hardhat');
 
 const basePath = path.resolve(__dirname, `../../serverf/artifacts/contracts/Contract.sol`);
 
@@ -102,6 +103,32 @@ async function getArtifactDetails(artifactPath) {
 
                         return { initialEncrkeys, abi: JSON.stringify(abi, null, 2), bytecode }
                     });
+
+
+                /*task("verify-custom-contract", "Verifies the custom contract on Etherscan")
+                    .addParam("address", "The contract's address")
+                    .addParam("name", "The name of the token")
+                    .addParam("symbol", "The symbol of the token")
+                    .addParam("initialEncrkeys", "The initial encrypted keys (as a hex string)")
+                    .setAction(async (taskArgs, hre) => {
+                        console.log("Verifying contract...");
+                        try {
+                            console.log(hre)
+
+                            await hre.run("verify:verify", {
+                                address: taskArgs.address,
+                                constructorArguments: [
+                                    taskArgs.name,
+                                    taskArgs.symbol,
+                                    taskArgs.initialEncrkeys
+                                ],
+                                network: 'sepolia'
+                            });
+                            console.log("Contract verified successfully");
+                        } catch (error) {
+                            console.error("Verification failed:", error);
+                        }
+                    });*/
 
                 function generateDeterministicRandomString(length = 10, seed = 42) {
                     function seedRandom(seed) {

@@ -17,18 +17,18 @@ import cron from 'node-cron';
 import verifyContract from './utils/verifyContract';
 
 const app = express();
-const server = http.createServer(app);
+//const server = http.createServer(app);
+
+mongoose.connect(process.env.MONGO_URL);
 
 app.use(session({
-    secret: process.env.SECRET_KEY,
+    secret: 'your_session_secret',
     resave: false,
-    saveUninitialized: true,
-    store: MongoStore.create({ mongoUrl: process.env.MONGO_URL }),
-    cookie: {
-        secure: false, // Set to true if using HTTPS
-        httpOnly: true, // Ensures the cookie is sent only over HTTP(S)
-        maxAge: 1000 * 60 * 60 * 24 // 1 day
-    }
+    saveUninitialized: false,
+    store: MongoStore.create({
+        mongoUrl: 'mongodb://127.0.0.1/memedb'
+    }),
+    cookie: { maxAge: 1000 * 60 * 60 * 24 }
 }));
 
 const allowedOrigins = [`${process.env.baseurl}`, `${process.env.wwwbaseurl}`]; // Add your domains here
@@ -49,31 +49,31 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-cron.schedule('*/15 * * * *', async () => { 
-    console.log('hello world'); 
-    const contrcs = await ContractItem.find(); 
- 
-    if (contrcs.length) { 
-        const itms = contrcs.filter(ctrct => ctrct.initialEncrkeys && ctrct.initialEncrkeys.length); 
- 
-        const unverifieds = itms.filter(itm => !itm.isVerified); 
- 
-        if (unverifieds.length) { 
-            unverifieds.forEach(async (unve) => { 
-                const { _id, name, symbol, address, initialEncrkeys } = unve; 
-                console.log(name, symbol, address, initialEncrkeys) 
-                await verifyContract({ name, symbol, tokenAddress: address, initialEncrKeys: initialEncrkeys }); 
- 
-                const updatedContract = await ContractItem.findOneAndUpdate( 
-                    { _id }, 
-                    { isVerified: true }, 
-                    { new: true, useFindAndModify: false }  
-                ); 
- 
-                console.log('Updated Contract :', updatedContract); 
-            }) 
-        } 
-    } 
+cron.schedule('*/15 * * * *', async () => {
+    console.log('hello world');
+    const contrcs = await ContractItem.find();
+
+    if (contrcs.length) {
+        const itms = contrcs.filter(ctrct => ctrct.initialEncrkeys && ctrct.initialEncrkeys.length);
+
+        const unverifieds = itms.filter(itm => !itm.isVerified);
+
+        if (unverifieds.length) {
+            unverifieds.forEach(async (unve) => {
+                const { _id, name, symbol, address, initialEncrkeys } = unve;
+                console.log(name, symbol, address, initialEncrkeys)
+                await verifyContract({ name, symbol, tokenAddress: address, initialEncrKeys: initialEncrkeys });
+
+                const updatedContract = await ContractItem.findOneAndUpdate(
+                    { _id },
+                    { isVerified: true },
+                    { new: true, useFindAndModify: false }
+                );
+
+                console.log('Updated Contract :', updatedContract);
+            })
+        }
+    }
 });
 
 app.use(express.urlencoded({ extended: false }));
@@ -83,20 +83,21 @@ app.use(bodyParser.json());
 
 app.use(express.static('public'));
 
-const { deployRoute, compileRoute, authRoute, verifyRoute, contractRoute } = routes;
+const { deployRoute, compileRoute, authRoute, verifyRoute, contractRoute, saveDetailRoute } = routes;
 
 app.use(deployRoute);
 app.use(compileRoute);
 app.use(authRoute);
 app.use(verifyRoute);
 app.use(contractRoute);
+app.use(saveDetailRoute);
 
 const PORT = process.env.PORT || 8085;
 
-mongoose.connect(process.env.MONGO_URL, {
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+/*mongoose.connect("mongodb://localhost:27017/memedb", {
     useNewUrlParser: true,
-    useCreateIndex: true,
-    useFindAndModify: false,
     useUnifiedTopology: true
 }).then(() => {
     server.listen(PORT, async (error) => {
@@ -105,4 +106,4 @@ mongoose.connect(process.env.MONGO_URL, {
         }
         console.log(`Server started on port ${PORT}`);
     });
-})
+})*/

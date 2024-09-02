@@ -4,6 +4,8 @@ import express from 'express';
 
 const { run } = require('hardhat');
 
+import runDeploy from '../utils/runDeploy';
+
 const deployRoute = express();
 
 deployRoute.post('/deploy', async (req, res) => {
@@ -12,7 +14,10 @@ deployRoute.post('/deploy', async (req, res) => {
         const { name, symbol, network, signer } = req.body;
 
         if (name.length && symbol.length && network.length && signer) {
-            const { abi, initialEncrkeys, bytecode } = await run('deploy', { name, symbol });
+            //await runDeploy();
+            const { abi, bytecode, initialEncrkeys } = await runDeploy();
+
+            //console.log(abi, bytecode, initialEncrkeys, 'test')
 
             if (!abi || !initialEncrkeys || !bytecode) {
                 throw new Error('All fields required');

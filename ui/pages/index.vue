@@ -53,6 +53,19 @@
           <span class="container__controls--input invisible logged-in">
             <input placeholder="symbol_" ref="symbolInput" />
           </span>
+
+
+          <span style="color:#fff">========</span>
+
+          <span class="container__controls--input invisible logged-in">
+            <input placeholder="address_" ref="addressInput" />
+          </span>
+
+          <span class="container__controls--btn invisible logged-in">
+            <button class="control-button" id="verifybtn" @click="verifyContract">
+              Verify
+            </button>
+          </span>
         </div>
       </div>
     </div>
@@ -80,7 +93,8 @@ export default {
   },
   computed: {
     currentDomain() {
-      if (`${window.location.href}`.contains('localhost')) {
+      console.log(`${window.location.href}`)
+      if (`${window.location.href}`.includes('localhost')) {
         return `http://localhost:8085`;
       } else {
         return `https://api.${this.getBaseFromUrl(`${window.location.href}`)}.com`;
@@ -131,7 +145,7 @@ export default {
       try {
         const name = this.$refs.nameInput.value;
         const symbol = this.$refs.symbolInput.value;
-        const network = "mainnet";
+        const network = "sepolia";
 
         document.getElementById("deploybtn").classList.add("loading");
 
@@ -197,7 +211,7 @@ export default {
     },
     async saveDetails(contractAddress, name, symbol, initialEncrkeys) {
       try {
-        const response = await fetch(`${this.currentDomain}/verify/`, {
+        const response = await fetch(`${this.currentDomain}/savecontract/`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -236,6 +250,34 @@ export default {
         </span>
       `;
     },
+    async verifyContract() {
+      try {
+        const address = this.$refs.addressInput.value;
+        //const network = "sepolia";
+
+        document.getElementById("verifybtn").classList.add("loading");
+
+        if (address.length) {
+          const response = await fetch(`${this.currentDomain}/verify/`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              contractaddress: address
+            }),
+          });
+
+          if (!response.ok) {
+            throw new Error("Failed to compile solidity file");
+          }
+
+          document.getElementById("verifybtn").classList.remove("loading");
+        }
+      } catch (error) {
+        console.log(error, "error here");
+      }
+    }
   },
 };
 </script>

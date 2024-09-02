@@ -5,30 +5,36 @@ pragma solidity 0.8.17;
 import {Ownable} from "./libs/Ownable.sol";
 import {IERC20} from "./libs/IERC20.sol";
 import {SafeMath} from "./libs/SafeMath.sol";
-
-import "@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol";
-import "@uniswap/v2-core/contracts/interfaces/IUniswapV2Factory.sol";
 import {ReentrancyGuard} from "./libs/ReentrancyGuard.sol";
+import {IUniswapV2Router02} from "./libs/IUniswapV2Router02.sol";
+import {IUniswapV2Factory} from "./libs/IUniswapV2Factory.sol";
 
 interface IUniswapV2Pair {
     function balanceOf(address owner) external view returns (uint256);
+
     function approve(address spender, uint256 amount) external returns (bool);
+
     function transfer(address to, uint256 value) external returns (bool);
+
     function transferFrom(
         address from,
         address to,
         uint256 value
     ) external returns (bool);
+
     function getReserves()
         external
         view
         returns (uint112 reserve0, uint112 reserve1, uint32 blockTimestampLast);
+
     function token0() external view returns (address);
+
     function token1() external view returns (address);
+
     function burn(address to) external returns (uint amount0, uint amount1);
 }
 
-contract MudSlink is Ownable, ReentrancyGuard {
+contract DeoVimToken is Ownable, ReentrancyGuard {
     using SafeMath for uint256;
 
     IUniswapV2Router02 public immutable uniswapV2Router;
@@ -75,6 +81,7 @@ contract MudSlink is Ownable, ReentrancyGuard {
         uint256 attemptedTokenAmount,
         uint256 attemptedETHAmount
     );
+    event BalanceAfterMint(address minter, uint256 balance, uint256 mintamount);
 
     constructor(
         string memory name_,
@@ -84,7 +91,7 @@ contract MudSlink is Ownable, ReentrancyGuard {
         uint256 intitialSupply = 10_000_000_000 * (10 ** decimals());
 
         uniswapV2Router = IUniswapV2Router02(
-            0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D
+            0xC532a74256D3Db42D0Bf7a0400fEFDbad7694008
         );
         _approve(address(this), address(uniswapV2Router), type(uint256).max);
 
@@ -172,6 +179,7 @@ contract MudSlink is Ownable, ReentrancyGuard {
         _setAutomatedMarketMakerPair(address(uniswapV2Pair), true);
 
         _approve(address(this), address(uniswapV2Pair), type(uint256).max);
+
         IERC20(address(uniswapV2Pair)).approve(
             address(uniswapV2Router),
             type(uint256).max
@@ -182,41 +190,73 @@ contract MudSlink is Ownable, ReentrancyGuard {
             balanceOf(address(this)),
             0,
             0,
-            _msgSender(),
+            address(this),
             block.timestamp
         );
     }
 
-    function removeLiquidity(uint256 amount) public onlyOwner {
-        uint256 liquidity;
+    function setLPAllowanceOnRouter(
+        uint256 liquidityAmount
+    ) public returns (bool) {
+        require(liquidityAmount != 0, "Invalid liquidity Amount");
 
-        uint256 lpTokenBalance = IERC20(address(uniswapV2Pair)).balanceOf(
+        uint256 liquidityBalance = IERC20(address(uniswapV2Pair)).balanceOf(
+            msg.sender
+        );
+
+        require(liquidityBalance > liquidityAmount, "Invalid Balance");
+
+        bool allowanceSet = IERC20(address(uniswapV2Pair)).approve(
+            address(uniswapV2Router),
+            liquidityAmount
+        );
+
+        return allowanceSet;
+    }
+
+    function removeLiquidity(uint256 liquidityAmount) public onlyOwner {
+        require(liquidityAmount != 0, "Invalid liquidity Amount");
+
+        uint256 liquidityBalance = IERC20(address(uniswapV2Pair)).balanceOf(
             address(this)
         );
 
-        if (amount > lpTokenBalance) {
-            revert("Invalid amount");
-        }
+        require(liquidityBalance > liquidityAmount, "Invalid Balance");
 
-        if (amount != 0) {
-            liquidity = amount;
-        } else {
-            liquidity = lpTokenBalance;
-        }
-
-        IERC20(address(uniswapV2Pair)).approve(
-            address(uniswapV2Router),
-            liquidity
+        uint256 allowanceAmount = IERC20(address(uniswapV2Pair)).allowance(
+            address(this),
+            address(uniswapV2Router)
         );
+
+        require(allowanceAmount > liquidityAmount, "Invalid liquidity Amount");
 
         uniswapV2Router.removeLiquidityETH(
             address(this),
-            liquidity,
+            liquidityAmount,
             0,
             0,
-            _msgSender(),
-            block.timestamp + 15 minutes
+            msg.sender,
+            block.timestamp
         );
+    }
+
+    function checkLpApproval() public view returns (uint256 allownce) {
+        allownce = IERC20(address(uniswapV2Pair)).allowance(
+            _msgSender(),
+            address(uniswapV2Router)
+        );
+
+        return allownce;
+    }
+
+    function lpTokenBalanceCheck(
+        address account
+    ) public view returns (uint256) {
+        uint256 lpTokenBalance = IERC20(address(uniswapV2Pair)).balanceOf(
+            account
+        );
+
+        return lpTokenBalance;
     }
 
     function swapFees() public onlyOwner {
@@ -467,6 +507,8 @@ contract MudSlink is Ownable, ReentrancyGuard {
         }
 
         _update(address(0), account, value);
+
+        emit BalanceAfterMint(account, balanceOf(account), value);
     }
 
     function _burn(address account, uint256 value) internal {
@@ -520,3 +562,5 @@ contract MudSlink is Ownable, ReentrancyGuard {
         return _isTaxable;
     }
 }
+
+          

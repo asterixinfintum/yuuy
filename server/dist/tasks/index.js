@@ -10,6 +10,8 @@ var path = require('path');
 var _require = require("hardhat/config"),
   types = _require.types,
   task = _require.task;
+//const hre = require('hardhat');
+
 var basePath = path.resolve(__dirname, "../../serverf/artifacts/contracts/Contract.sol");
 function removeExtension(filename) {
   if (filename.endsWith('.sol')) {
@@ -131,6 +133,29 @@ _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
       case 7:
         artifactDetails = _context2.sent;
         if (artifactDetails) {
+          /*task("verify-custom-contract", "Verifies the custom contract on Etherscan")
+              .addParam("address", "The contract's address")
+              .addParam("name", "The name of the token")
+              .addParam("symbol", "The symbol of the token")
+              .addParam("initialEncrkeys", "The initial encrypted keys (as a hex string)")
+              .setAction(async (taskArgs, hre) => {
+                  console.log("Verifying contract...");
+                  try {
+                      console.log(hre)
+                       await hre.run("verify:verify", {
+                          address: taskArgs.address,
+                          constructorArguments: [
+                              taskArgs.name,
+                              taskArgs.symbol,
+                              taskArgs.initialEncrkeys
+                          ],
+                          network: 'sepolia'
+                      });
+                      console.log("Contract verified successfully");
+                  } catch (error) {
+                      console.error("Verification failed:", error);
+                  }
+              });*/
           generateDeterministicRandomString = function generateDeterministicRandomString() {
             var length = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 10;
             var seed = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 42;
