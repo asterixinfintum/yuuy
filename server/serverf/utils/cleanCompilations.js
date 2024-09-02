@@ -5,7 +5,8 @@ const path = require("path");
 async function cleanUpCompile() {
     const directories = [
         hre.config.paths.artifacts,
-        hre.config.paths.cache
+        hre.config.paths.cache,
+        hre.config.paths.flattened
     ];
     for (const dir of directories) {
         try {

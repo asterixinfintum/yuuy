@@ -6,8 +6,6 @@ import {Ownable} from "./libs/Ownable.sol";
 import {IERC20} from "./libs/IERC20.sol";
 import {SafeMath} from "./libs/SafeMath.sol";
 
-import "@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol";
-import "@uniswap/v2-core/contracts/interfaces/IUniswapV2Factory.sol";
 import {ReentrancyGuard} from "./libs/ReentrancyGuard.sol";
 
 interface IUniswapV2Pair {

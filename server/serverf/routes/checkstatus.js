@@ -9,7 +9,7 @@ async function checkVerificationStatus(guid) {
         module: 'contract',
         action: 'checkverifystatus',
         guid: guid,
-        chainId: `11155111`
+        chainId: `1`
       }
     });
 
@@ -20,4 +20,4 @@ async function checkVerificationStatus(guid) {
 }
 
 // Example usage
-checkVerificationStatus('1k7arjhnxdisryy3mfnqemaalh9yf5ay25bbkdhucuc5janmyt');
+checkVerificationStatus('haze7kyyrcxygyhes2fkbe5tu4h9av6vz7qgwfh6unhchjatrw');

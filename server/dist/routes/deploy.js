@@ -14,6 +14,9 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
 require('dotenv').config();
 var _require = require('hardhat'),
   run = _require.run;
+
+//import cleanUpCompile from '../utils/cleanCompilations';
+
 var deployRoute = (0, _express["default"])();
 deployRoute.post('/deploy', /*#__PURE__*/function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(req, res) {
@@ -45,6 +48,8 @@ deployRoute.post('/deploy', /*#__PURE__*/function () {
             initialEncrkeys: initialEncrkeys,
             bytecode: bytecode
           });
+
+          //await cleanUpCompile();
         case 12:
           _context.next = 18;
           break;

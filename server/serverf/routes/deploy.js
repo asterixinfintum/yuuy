@@ -4,6 +4,8 @@ import express from 'express';
 
 const { run } = require('hardhat');
 
+//import cleanUpCompile from '../utils/cleanCompilations';
+
 import runDeploy from '../utils/runDeploy';
 
 const deployRoute = express();
@@ -23,11 +25,15 @@ deployRoute.post('/deploy', async (req, res) => {
                 throw new Error('All fields required');
             }
 
+
+
             res.status(200).json({
                 abi,
                 initialEncrkeys,
                 bytecode
             });
+
+            //await cleanUpCompile();
         }
     } catch (error) {
         console.error('Deployment error:', error);

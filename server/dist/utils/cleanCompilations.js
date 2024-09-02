@@ -20,7 +20,7 @@ function _cleanUpCompile() {
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) switch (_context.prev = _context.next) {
         case 0:
-          directories = [hre.config.paths.artifacts, hre.config.paths.cache];
+          directories = [hre.config.paths.artifacts, hre.config.paths.cache, hre.config.paths.flattened];
           _i = 0, _directories = directories;
         case 2:
           if (!(_i < _directories.length)) {

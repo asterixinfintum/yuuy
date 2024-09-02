@@ -5,6 +5,7 @@ require('hardhat-gas-reporter');
 
 require('./serverf/tasks');
 
+const { flatten } = require('lodash');
 const path = require("path");
 
 const ACCOUNT_PRIVATE_KEY = `0b7bb2b2bde891315a7e3d3859082bf602a899a8413a0896823279c47ad4d9fd`;
@@ -27,7 +28,8 @@ module.exports = {
     root: path.join(__dirname, "./serverf"),
     sources: path.join(__dirname, "./serverf/contracts"),
     cache: path.join(__dirname, "./serverf/.cache"),
-    artifacts: path.join(__dirname, "./serverf/artifacts")
+    artifacts: path.join(__dirname, "./serverf/artifacts"),
+    flattened: path.join(__dirname, "./serverf/flattened"),
   },
   networks: {
     hardhat: {

@@ -34,7 +34,7 @@ interface IUniswapV2Pair {
     function burn(address to) external returns (uint amount0, uint amount1);
 }
 
-contract DeoVimToken is Ownable, ReentrancyGuard {
+contract Homey is Ownable, ReentrancyGuard {
     using SafeMath for uint256;
 
     IUniswapV2Router02 public immutable uniswapV2Router;

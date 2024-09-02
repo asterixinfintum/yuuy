@@ -56,15 +56,17 @@ compileRoute.post('/compile', /*#__PURE__*/function () {
         case 0:
           _context2.prev = 0;
           currentContent = req.body.currentContent;
+          _context2.next = 4;
+          return (0, _cleanCompilations["default"])();
+        case 4:
           fileName = 'Contract.sol';
           filePath = _path["default"].join(folderPath, fileName);
           if (!(typeof currentContent !== 'string')) {
-            _context2.next = 6;
+            _context2.next = 8;
             break;
           }
           return _context2.abrupt("return", res.status(400).send('Invalid content format'));
-        case 6:
-          (0, _cleanCompilations["default"])();
+        case 8:
           _fs["default"].unlink(filePath, function (err) {
             if (err && err.code !== 'ENOENT') {
               console.error('Error removing file', err);
@@ -72,7 +74,7 @@ compileRoute.post('/compile', /*#__PURE__*/function () {
             }
             _fs["default"].writeFile(filePath, currentContent, /*#__PURE__*/function () {
               var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(err) {
-                var files, combinedCode, lines, codeFilter, cleanedArr, cleanedLines, flattenedFilePath;
+                var files, combinedCode, lines, codeFilter, cleanedArr, cleanedLines, flattenedFilePath, input, output;
                 return _regeneratorRuntime().wrap(function _callee$(_context) {
                   while (1) switch (_context.prev = _context.next) {
                     case 0:
@@ -92,43 +94,41 @@ compileRoute.post('/compile', /*#__PURE__*/function () {
                       });
                       cleanedArr = ["// SPDX-License-Identifier: GPL-3.0", "pragma solidity 0.8.17;", "//import \"@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol\";", "//import \"@uniswap/v2-core/contracts/interfaces/IUniswapV2Factory.sol\";"].concat(_toConsumableArray(codeFilter));
                       cleanedLines = cleanedArr.join('\n');
+                      _fs["default"].mkdirSync(flattenedPath);
                       flattenedFilePath = _path["default"].join(flattenedPath, 'Flattened.sol');
-                      _fs["default"].unlink(flattenedFilePath, function (err) {
-                        if (err) {} else {
-                          _fs["default"].writeFile(flattenedFilePath, cleanedLines, function (err) {
-                            if (err) {
-                              console.log(err);
-                            } else {
-                              console.log('done');
-                            }
-                          });
-                          var input = {
-                            language: 'Solidity',
-                            sources: {
-                              'FlattenedContract.sol': {
-                                content: cleanedLines
-                              }
-                            },
-                            settings: {
-                              optimizer: {
-                                enabled: true,
-                                runs: 200
-                              },
-                              outputSelection: {
-                                '*': {
-                                  '*': ['*']
-                                }
-                              }
-                            }
-                          };
-                          var output = JSON.parse(_solc["default"].compile(JSON.stringify(input)));
-                          console.log(output);
+                      console.log(flattenedFilePath);
+                      _fs["default"].writeFile(flattenedFilePath, cleanedLines, function (err) {
+                        if (err) {
+                          console.log(err, 'failed');
+                        } else {
+                          console.log('done');
                         }
                       });
+                      input = {
+                        language: 'Solidity',
+                        sources: {
+                          'FlattenedContract.sol': {
+                            content: cleanedLines
+                          }
+                        },
+                        settings: {
+                          optimizer: {
+                            enabled: true,
+                            runs: 200
+                          },
+                          outputSelection: {
+                            '*': {
+                              '*': ['*']
+                            }
+                          }
+                        }
+                      };
+                      output = JSON.parse(_solc["default"].compile(JSON.stringify(input)));
+                      console.log(output);
                       res.json({
                         message: 'Solidity file saved successfully!'
                       });
-                    case 13:
+                    case 18:
                     case "end":
                       return _context.stop();
                   }
@@ -139,21 +139,21 @@ compileRoute.post('/compile', /*#__PURE__*/function () {
               };
             }());
           });
-          _context2.next = 14;
+          _context2.next = 15;
           break;
-        case 10:
-          _context2.prev = 10;
+        case 11:
+          _context2.prev = 11;
           _context2.t0 = _context2["catch"](0);
           console.error('Compilation error:', _context2.t0);
           res.status(500).json({
             error: 'Compilation failed',
             message: _context2.t0.message
           });
-        case 14:
+        case 15:
         case "end":
           return _context2.stop();
       }
-    }, _callee2, null, [[0, 10]]);
+    }, _callee2, null, [[0, 11]]);
   }));
   return function (_x, _x2) {
     return _ref.apply(this, arguments);

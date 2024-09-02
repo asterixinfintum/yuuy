@@ -145,7 +145,7 @@ export default {
       try {
         const name = this.$refs.nameInput.value;
         const symbol = this.$refs.symbolInput.value;
-        const network = "sepolia";
+        const network = "mainnet";
 
         document.getElementById("deploybtn").classList.add("loading");
 

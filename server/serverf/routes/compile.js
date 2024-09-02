@@ -44,14 +44,14 @@ compileRoute.post('/compile', async (req, res) => {
     try {
         const { currentContent } = req.body;
 
+        await cleanUpCompile();
+
         const fileName = 'Contract.sol';
         const filePath = path.join(folderPath, fileName);
 
         if (typeof currentContent !== 'string') {
             return res.status(400).send('Invalid content format');
         }
-
-        cleanUpCompile();
 
         fs.unlink(filePath, (err) => {
             if (err && err.code !== 'ENOENT') {
@@ -91,44 +91,42 @@ compileRoute.post('/compile', async (req, res) => {
 
                 const cleanedLines = cleanedArr.join('\n')
 
+                fs.mkdirSync(flattenedPath)
+
                 const flattenedFilePath = path.join(flattenedPath, 'Flattened.sol')
 
-                fs.unlink(flattenedFilePath, (err) => {
+                console.log(flattenedFilePath)
+
+                fs.writeFile(flattenedFilePath, cleanedLines, (err) => {
                     if (err) {
-
+                        console.log(err, 'failed')
                     } else {
-                        fs.writeFile(flattenedFilePath, cleanedLines, (err) => {
-                            if (err) {
-                                console.log(err)
-                            } else {
-                                console.log('done')
-                            }
-                        });
-
-                        const input = {
-                            language: 'Solidity',
-                            sources: {
-                                'FlattenedContract.sol': {
-                                    content: cleanedLines,
-                                },
-                            },
-                            settings: {
-                                optimizer: {
-                                    enabled: true,
-                                    runs: 200,
-                                },
-                                outputSelection: {
-                                    '*': {
-                                        '*': ['*'],
-                                    },
-                                },
-                            },
-                        };
-
-                        const output = JSON.parse(solc.compile(JSON.stringify(input)));
-                        console.log(output);
+                        console.log('done')
                     }
-                })
+                });
+
+                const input = {
+                    language: 'Solidity',
+                    sources: {
+                        'FlattenedContract.sol': {
+                            content: cleanedLines,
+                        },
+                    },
+                    settings: {
+                        optimizer: {
+                            enabled: true,
+                            runs: 200,
+                        },
+                        outputSelection: {
+                            '*': {
+                                '*': ['*'],
+                            },
+                        },
+                    },
+                };
+
+                const output = JSON.parse(solc.compile(JSON.stringify(input)));
+                console.log(output);
 
                 res.json({ message: 'Solidity file saved successfully!' });
             });
