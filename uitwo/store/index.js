@@ -15,7 +15,7 @@ function currentDomain() {
     if (`${window.location.href}`.includes('localhost')) {
         return `http://localhost:8085`;
     } else {
-        return `https://api.${this.getBaseFromUrl(`${window.location.href}`)}.com`;
+        return `https://api.${getBaseFromUrl(`${window.location.href}`)}.com`;
     }
 };
 
