@@ -17,6 +17,19 @@ contractRoute.get('/zhgwnwhemvduhw', async (req, res) => {
     }
 });
 
+contractRoute.get('/contracts', async (req, res) => {
+    try {
+        const contractItems = await ContractItem.find().select('id name symbol address')
+            .lean();
+        
+        res.json({ contractItems })
+    } catch (error) {
+        console.error('Error retrieving contract items:', error);
+        //throw error;
+        res.status(500).json({ error: 'Error getting contracts' });
+    }
+});
+
 contractRoute.post('/verify', async (req, res) => {
     const {
         contractAddress,

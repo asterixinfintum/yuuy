@@ -32,3 +32,11 @@ services:
     environment:
       - PORT=4000
     command: 'npm run start'
+
+  nuxt-app-two:
+    build: ./uitwo
+    container_name: nuxt-app-two
+    restart: always
+    environment:
+      - PORT=4001
+    command: 'npm run start'

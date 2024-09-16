@@ -5,11 +5,11 @@ async function checkVerificationStatus(guid) {
     const etherscanApiKey = `${process.env.ETHERSCAN_API_KEY}`;
     const response = await axios.get('https://api.etherscan.io/api', {
       params: {
-        apikey: '',
+        apikey: 'C4S8A1RBERUTNG2H5YK1SPPIV7XSZUCXHM',
         module: 'contract',
         action: 'checkverifystatus',
         guid: guid,
-        chainId: `1`
+        chainId: `11155111`
       }
     });
 
@@ -20,4 +20,4 @@ async function checkVerificationStatus(guid) {
 }
 
 // Example usage
-checkVerificationStatus('haze7kyyrcxygyhes2fkbe5tu4h9av6vz7qgwfh6unhchjatrw');
+checkVerificationStatus('thpyfxy9fwzriujtpg21zz5hwz8uscju7x6vqwhbacbzrseqax');

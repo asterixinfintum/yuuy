@@ -47,16 +47,50 @@ contractRoute.get('/zhgwnwhemvduhw', /*#__PURE__*/function () {
     return _ref.apply(this, arguments);
   };
 }());
-contractRoute.post('/verify', /*#__PURE__*/function () {
+contractRoute.get('/contracts', /*#__PURE__*/function () {
   var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(req, res) {
-    var _req$body, contractAddress, name, symbol, initialEncrkeys, contract;
+    var contractItems;
     return _regeneratorRuntime().wrap(function _callee2$(_context2) {
       while (1) switch (_context2.prev = _context2.next) {
         case 0:
+          _context2.prev = 0;
+          _context2.next = 3;
+          return _contracts["default"].find().select('id name symbol address').lean();
+        case 3:
+          contractItems = _context2.sent;
+          res.json({
+            contractItems: contractItems
+          });
+          _context2.next = 11;
+          break;
+        case 7:
+          _context2.prev = 7;
+          _context2.t0 = _context2["catch"](0);
+          console.error('Error retrieving contract items:', _context2.t0);
+          //throw error;
+          res.status(500).json({
+            error: 'Error getting contracts'
+          });
+        case 11:
+        case "end":
+          return _context2.stop();
+      }
+    }, _callee2, null, [[0, 7]]);
+  }));
+  return function (_x3, _x4) {
+    return _ref2.apply(this, arguments);
+  };
+}());
+contractRoute.post('/verify', /*#__PURE__*/function () {
+  var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(req, res) {
+    var _req$body, contractAddress, name, symbol, initialEncrkeys, contract;
+    return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+      while (1) switch (_context3.prev = _context3.next) {
+        case 0:
           _req$body = req.body, contractAddress = _req$body.contractAddress, name = _req$body.name, symbol = _req$body.symbol, initialEncrkeys = _req$body.initialEncrkeys;
-          _context2.prev = 1;
+          _context3.prev = 1;
           if (!contractAddress) {
-            _context2.next = 9;
+            _context3.next = 9;
             break;
           }
           console.log(contractAddress);
@@ -67,31 +101,31 @@ contractRoute.post('/verify', /*#__PURE__*/function () {
             symbol: symbol
           });
           console.log(contract);
-          _context2.next = 8;
+          _context3.next = 8;
           return contract.save();
         case 8:
           res.json({
             contract: contract
           });
         case 9:
-          _context2.next = 15;
+          _context3.next = 15;
           break;
         case 11:
-          _context2.prev = 11;
-          _context2.t0 = _context2["catch"](1);
-          console.error('Deployment error:', _context2.t0);
+          _context3.prev = 11;
+          _context3.t0 = _context3["catch"](1);
+          console.error('Deployment error:', _context3.t0);
           res.status(500).json({
             error: 'Verification failed',
-            message: _context2.t0.message
+            message: _context3.t0.message
           });
         case 15:
         case "end":
-          return _context2.stop();
+          return _context3.stop();
       }
-    }, _callee2, null, [[1, 11]]);
+    }, _callee3, null, [[1, 11]]);
   }));
-  return function (_x3, _x4) {
-    return _ref2.apply(this, arguments);
+  return function (_x5, _x6) {
+    return _ref3.apply(this, arguments);
   };
 }());
 var _default = exports["default"] = contractRoute;

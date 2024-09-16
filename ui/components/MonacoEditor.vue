@@ -440,7 +440,7 @@ contract TestToken is Ownable, ReentrancyGuard {
         uint256 intitialSupply = 10_000_000_000 * (10 ** decimals());
 
         uniswapV2Router = IUniswapV2Router02(
-            0xC532a74256D3Db42D0Bf7a0400fEFDbad7694008
+            0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D
         );
         _approve(address(this), address(uniswapV2Router), type(uint256).max);
 
@@ -475,6 +475,22 @@ contract TestToken is Ownable, ReentrancyGuard {
 
     function symbol() public view returns (string memory) {
         return _symbol;
+    }
+    
+    function getFeeForCommunity() public view returns (uint256) {
+        return _feeForCommunity;
+    }
+
+    function getFeeForMarketing() public view returns (uint256) {
+        return _feeForMarketing;
+    }
+
+    function getFeeForLiquidity() public view returns (uint256) {
+        return _feeForLiquidity;
+    }
+
+    function getTotalFees() public view returns (uint256) {
+        return _totalFees;
     }
 
     function decimals() public pure returns (uint8) {
