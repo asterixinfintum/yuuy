@@ -1,3 +1,16 @@
+function getBaseFromUrl(url) {
+    // Create a new URL object
+    const parsedUrl = new URL(url);
+
+    // Extract the hostname and split it by dots
+    const hostnameParts = parsedUrl.hostname.split(".");
+
+    // Return the second-to-last part of the hostname (which is 'youtube' in this case)
+    return hostnameParts.length > 1
+        ? hostnameParts[hostnameParts.length - 2]
+        : hostnameParts[0];
+};
+
 function currentDomain() {
     if (`${window.location.href}`.includes('localhost')) {
         return `http://localhost:8085`;
