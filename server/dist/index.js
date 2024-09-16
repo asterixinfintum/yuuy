@@ -33,7 +33,7 @@ app.use((0, _expressSession["default"])({
     maxAge: 1000 * 60 * 60 * 24
   }
 }));
-var allowedOrigins = ["".concat(process.env.baseurl), "".concat(process.env.wwwbaseurl)]; // Add your domains here
+var allowedOrigins = ["".concat(process.env.baseurl), "".concat(process.env.wwwbaseurl), "".concat(process.env.contractsbaseurl)]; // Add your domains here
 
 var corsOptions = {
   origin: function origin(_origin, callback) {

@@ -29,7 +29,7 @@ app.use(session({
     cookie: { maxAge: 1000 * 60 * 60 * 24 }
 }));
 
-const allowedOrigins = [`${process.env.baseurl}`, `${process.env.wwwbaseurl}`]; // Add your domains here
+const allowedOrigins = [`${process.env.baseurl}`, `${process.env.wwwbaseurl}`, `${process.env.contractsbaseurl}`]; // Add your domains here
 
 const corsOptions = {
     origin: function (origin, callback) {
